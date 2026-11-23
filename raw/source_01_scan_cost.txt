@@ -1,0 +1,4 @@
+[原始筆記 01] 資料庫查詢效能基礎：為什麼 SELECT 會變慢？
+在關聯式資料庫（如 MySQL / PostgreSQL）中，資料表存放在硬碟上，底層以「資料頁（Page，通常為 16KB）」作為讀寫最小單位。
+當我們執行 SELECT * FROM users WHERE email = 'test@example.com' 時，如果 email 欄位沒有建立任何索引，資料庫引擎（Query Optimizer）別無選擇，只能啟動 Full Table Scan（全表掃描）。
+全表掃描代表資料庫必須把這張表的所有資料頁逐一從硬碟讀進記憶體（Buffer Pool），並一行一行比對字串。當資料量只有 1,000 筆時感覺不到延遲；但當資料量成長到 1,000 萬筆時，磁碟 I/O 會瞬間暴增，查詢時間從幾毫秒飆升到數十秒，時間複雜度為 O(N)。

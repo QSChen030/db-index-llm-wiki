@@ -1,0 +1,4 @@
+[原始筆記 04] 多欄位聯合查詢：複合索引與最左前綴原則
+實務上查詢經常同時包含多個條件，例如 WHERE last_name = 'Chen' AND first_name = 'QS' AND city = 'Taipei'。這時我們會建立複合索引 INDEX idx_name_city (last_name, first_name, city)。
+B+ Tree 在排序複合索引時，會先比較第一個欄位 last_name；若 last_name 相同，再比較 second 欄位 first_name；最後才比較 city。
+這衍生出「最左前綴原則（Leftmost Prefix Principle）」：查詢條件必須從索引最左邊的第一個欄位開始連續匹配，索引才會生效。如果查詢條件直接跳過 last_name，只寫 WHERE first_name = 'QS'，由於 B+ Tree 內部是先按 last_name 排序的，first_name 在整棵樹中並非全域有序，因此資料庫無法使用此索引，只能退回全表掃描。
